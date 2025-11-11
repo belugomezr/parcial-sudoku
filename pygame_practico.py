@@ -1,4 +1,5 @@
 import pygame
+import random
 
 def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, minimo: int, maximo: int) -> list:
     matriz = []
