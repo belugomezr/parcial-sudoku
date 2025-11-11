@@ -4,7 +4,7 @@ pygame.init()
 pantalla = pygame.display.set_mode((800,600))
 pygame.display.set_caption("Sudoku")
 
-fondo = pygame.image.load("fondo.sudoku.jpg")
+fondo = pygame.image.load("parcial-sudoku\\fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
 
 NEGRO = (0, 0, 0)
@@ -41,7 +41,5 @@ while True:
                     print("Clic derecho detectado.")
          
     
-    
-    
-    
+      
     pygame.display.flip()
