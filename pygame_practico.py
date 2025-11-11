@@ -37,7 +37,7 @@ pygame.display.set_caption("Sudoku")
 NEGRO = (0,0,0)
 BLANCO = (255,255,255)
 
-fondo = pygame.image.load("fondo.sudoku.jpg")
+fondo = pygame.image.load("parcial-sudoku\\fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
 # Tamaño de cada cuadrado
 TAM_CUADRO = 40
