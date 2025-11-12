@@ -27,7 +27,7 @@ NEGRO = (0,0,0)
 BLANCO = (255,255,255)
 VERDE = (0, 255, 0)
 
-fondo = pygame.image.load("fondo.sudoku.jpg")
+fondo = pygame.image.load("sudoku\\fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
 
 TAM_CUADRO = 40
