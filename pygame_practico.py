@@ -1,22 +1,8 @@
 import pygame
 import random
+from matriz import *
 
-# --- FUNCIONES ---
-def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, minimo: int, maximo: int) -> list:
-    matriz = []
-    for i in range(cantidad_filas):
-        fila = [random.randint(minimo, maximo)
-            for _ in range(cantidad_columnas)]
-        matriz.append(fila)
-    return matriz
-
-def dividir_en_regiones(matriz):
-    regiones = []
-    for fila_inicio in range(0, 9, 3):
-        for col_inicio in range(0, 9, 3):
-            region = [fila[col_inicio:col_inicio+3] for fila in matriz[fila_inicio:fila_inicio+3]]
-            regiones.append(region)
-    return regiones
+matriz = inicializar_matriz(9,9,0)
 
 # --- CONFIGURACIÓN PYGAME ---
 pygame.init()
@@ -27,15 +13,16 @@ NEGRO = (0,0,0)
 BLANCO = (255,255,255)
 VERDE = (0, 255, 0)
 
-fondo = pygame.image.load("sudoku\\fondo.sudoku.jpg")
+fondo = pygame.image.load("fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
+
 
 TAM_CUADRO = 40
 MARGEN_X = 200
 MARGEN_Y = 100
 fuente = pygame.font.Font(None, 40)  # ✅ fuente creada antes del bucle
 
-matriz = inicializar_matriz(9, 9, 1, 9)
+matriz = inicializar_matriz(9, 9, 0)
 
 # --- BUCLE PRINCIPAL ---
 while True:
@@ -46,7 +33,7 @@ while True:
         if evento.type == pygame.MOUSEBUTTONDOWN:
             x, y = evento.pos
             if 50 <= x <= 250 and 500 <= y <= 550:  # ✅ Botón Reiniciar
-                matriz = inicializar_matriz(9, 9, 1, 9)
+                matriz = inicializar_matriz(9, 9, 0)
 
     pantalla.blit(fondo, (0, 0))
 
