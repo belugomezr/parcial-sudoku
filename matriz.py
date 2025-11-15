@@ -35,5 +35,5 @@ def cargar_numeros(matriz, cantidad):
 
     return matriz
 
-carga_de_numeros = cargar_numeros(matriz, 45)
-print(carga_de_numeros)
+numeros_cargados= cargar_numeros(matriz, 45)
+print(numeros_cargados)
