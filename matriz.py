@@ -41,32 +41,34 @@ def chequear_region(matriz:list, fila:int, columna:int, numero:int):
 
 
 def cargar_numeros(matriz:list, cantidad:int):
-    for _ in range(cantidad):
-        numero_repetido = True
-        fila = random.randint(0, 8)
-        columna = random.randint(0, 8)
-        numero_aleatorio = 0
+    max_numeros_por_region = (int) (cantidad / 9)
 
-        # si el casillero ya está ocupado, buscamos otro
-        while matriz[fila][columna] != 0:
-            fila = random.randint(0, 8)
-            columna = random.randint(0, 8)
+    for fila_region in range(3):
+        for columna_region in range(3):
+            for _ in range(max_numeros_por_region):
+                numero_repetido = True
+                numero_aleatorio = 0
+                
+                fila = random.randint(0, 2) + (fila_region * 3)
+                columna = random.randint(0, 2) + (columna_region * 3)
+                # si el casillero ya está ocupado, buscamos otro
+                while matriz[fila][columna] != 0:
+                    fila = random.randint(0, 2) + (fila_region * 3)
+                    columna = random.randint(0, 2) + (columna_region * 3)
 
-        while(numero_repetido == True):
-            numero_aleatorio = random.randint(1, 9)
-            numero_repetido = False
+                while(numero_repetido == True):
+                    numero_aleatorio = random.randint(1, 9)
+                    numero_repetido = False
 
-            if chequear_fila(matriz, fila, numero_aleatorio) == True:
-                numero_repetido = True
-            elif chequear_columna(matriz, columna, numero_aleatorio ) == True:
-                numero_repetido = True
-            elif chequear_region(matriz, fila, columna, numero_aleatorio) == True:
-                numero_repetido = True
-        
-        if numero_repetido == False:
-            matriz[fila][columna] = numero_aleatorio
+                    if chequear_fila(matriz, fila, numero_aleatorio) == True:
+                        numero_repetido = True
+                    elif chequear_columna(matriz, columna, numero_aleatorio ) == True:
+                        numero_repetido = True
+                    elif chequear_region(matriz, fila, columna, numero_aleatorio) == True:
+                        numero_repetido = True
+                
+                if numero_repetido == False:
+                    matriz[fila][columna] = numero_aleatorio
 
     return matriz
 
-numeros_cargados = cargar_numeros(matriz, 45)
-print(numeros_cargados)
