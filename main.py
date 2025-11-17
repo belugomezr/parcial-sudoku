@@ -51,18 +51,18 @@ def dibujar_numeros(pantalla, matriz):
     """
     Dibuja los números de la matriz en la pantalla de Pygame.
     """
-    fuente = pygame.font.Font(None, 40)  # tamaño del texto
+    fuente = pygame.font.Font(None, 30)  # tamaño del texto
     tamaño_celdas = 50
     inicio_x = 175
     inicio_y = 75
 
     for fila in range(9):
-        for col in range(9):
-            numero = matriz[fila][col]
+        for columna in range(9):
+            numero = matriz[fila][columna]
             if numero != 0:  # solo dibujar los números que existen
                 texto = fuente.render(str(numero), True, (0, 0, 0))
                 # centrar el número en la celda
-                x = inicio_x + col * tamaño_celdas + tamaño_celdas//2 - texto.get_width()//2
+                x = inicio_x + columna * tamaño_celdas + tamaño_celdas//2 - texto.get_width()//2
                 y = inicio_y + fila * tamaño_celdas + tamaño_celdas//2 - texto.get_height()//2
                 pantalla.blit(texto, (x, y))
 
@@ -74,6 +74,14 @@ while True:
         if evento.type == pygame.QUIT:
             pygame.quit()
             quit()
+        elif evento.type == pygame.MOUSEBUTTONDOWN:
+            mouseX, mouseY = evento.pos
+            if 175 <= mouseX <= 625 and 75 <= mouseY <= 525:
+                print(mouseX, mouseY)
+                fila = (mouseY - 75) // 50
+                columna = (mouseX - 175) // 50
+            else:
+                celda_seleccionada = None
     
     dimension_pantalla.blit(fondo, (0,0))
     dibujar_tablero(dimension_pantalla)
