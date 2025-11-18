@@ -7,9 +7,14 @@ dimension_pantalla = pygame.display.set_mode((800,600)) #Creamos la dimension_pa
 pygame.display.set_caption("Mi sudoku") #Titulo de la ventana
 fondo = pygame.image.load("fondo.sudoku.jpg") #Cargo la imagen de mi dimension_pantalla 
 fondo = pygame.transform.scale(fondo, (800, 600)) #Adapto la imagen a la dimension_pantalla
+celda_seleccionada = None
 
 matriz = inicializar_matriz(9,9,0)
 cargar_numeros(matriz, 45)
+fijas = []
+for fila in matriz:
+    fijas.append([1 if x != 0 else 0 for x in fila])
+
 
 
 def dibujar_tablero(pantalla):
@@ -71,24 +76,47 @@ def dibujar_numeros(pantalla, matriz):
 while True:
 
     for evento in pygame.event.get():
+        
+        #CERRAR VENTANA
         if evento.type == pygame.QUIT:
             pygame.quit()
             quit()
+        
+        #SELECCIONAR CELDA
         elif evento.type == pygame.MOUSEBUTTONDOWN:
             mouseX, mouseY = evento.pos
             if 175 <= mouseX <= 625 and 75 <= mouseY <= 525:
-                print(mouseX, mouseY)
                 fila = (mouseY - 75) // 50
                 columna = (mouseX - 175) // 50
+                celda_seleccionada = (fila, columna)
             else:
                 celda_seleccionada = None
     
+        
+        #INGRESAR NUMEROS
+        if evento.type == pygame.KEYDOWN and celda_seleccionada is not None:
+            fila, columna = celda_seleccionada
+            
+            
+            # Primero verificamos si la celda es fija
+            if fijas[fila][columna] == 1:
+            # No permitimos modificarla
+                continue
+
+
+            #NUMEROS DEL 1 AL 9
+            if pygame.K_1 <= evento.key <= pygame.K_9:
+                numero = evento.key - pygame.K_0
+                matriz[fila][columna] = numero
+
+            #BORRAR CON BACKSPACE/DELETE
+            if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
+                matriz[fila][columna] = 0
+
+
+
     dimension_pantalla.blit(fondo, (0,0))
     dibujar_tablero(dimension_pantalla)
     dibujar_numeros(dimension_pantalla, matriz)
 
     pygame.display.update() #Actualiza
-
-
-    
-
