@@ -13,44 +13,44 @@ def inicializar_matriz(cantidad_filas: int, cantidad_columnas: int, valor:int) -
 matriz = inicializar_matriz(9,9,0)
 
 
-def chequear_fila(matriz:list, fila:int, numero:int):
+def chequear_fila(matriz:list, fila:int, numero:int): #matriz, fila y numero que quiero buscar 
     retorno = False
-    for i in range(9):
-        if matriz[fila][i] == numero:
-            retorno = True
-    return retorno
+    for i in range(9): #recorro las filas de mi matriz 
+        if matriz[fila][i] == numero: #comparo el valor con el numero que estoy buscando
+            retorno = True 
+    return retorno 
 
-def chequear_columna(matriz:list, columna:int, numero:int):
+def chequear_columna(matriz:list, columna:int, numero:int): 
     retorno = False
     for i in range(9):
         if matriz[i][columna] == numero:
             retorno = True
     return retorno
 
-def chequear_region(matriz:list, fila:int, columna:int, numero:int):
+def chequear_region(matriz:list, fila:int, columna:int, numero:int): 
     retorno = False
-    fila_vertice = (int) (fila/3) * 3
-    columna_vertice = (int) (columna/3) * 3
+    fila_vertice = (int) (fila/3) * 3  
+    columna_vertice = (int) (columna/3) * 3  
 
     for i in range(3):
         for j in range(3):
-            if matriz[i + fila_vertice][j + columna_vertice] == numero:
+            if matriz[i + fila_vertice][j + columna_vertice] == numero:  
                 retorno = True
 
-    return retorno
+    return retorno 
 
 
 def cargar_numeros(matriz:list, cantidad:int):
     max_numeros_por_region = (int) (cantidad / 9)
 
-    for fila_region in range(3):
+    for fila_region in range(3): #recorre regiones (0,1,2)
         for columna_region in range(3):
-            for _ in range(max_numeros_por_region):
+            for _ in range(max_numeros_por_region): 
                 numero_repetido = True
                 numero_aleatorio = 0
                 
-                fila = random.randint(0, 2) + (fila_region * 3)
-                columna = random.randint(0, 2) + (columna_region * 3)
+                fila = random.randint(0, 2) + (fila_region * 3) 
+                columna = random.randint(0, 2) + (columna_region * 3) 
                 # si el casillero ya está ocupado, buscamos otro
                 while matriz[fila][columna] != 0:
                     fila = random.randint(0, 2) + (fila_region * 3)
