@@ -9,11 +9,10 @@ fondo = pygame.image.load("fondo.sudoku.jpg") #Cargo la imagen de mi dimension_p
 fondo = pygame.transform.scale(fondo, (800, 600)) #Adapto la imagen a la dimension_pantalla
 celda_seleccionada = None
 
-matriz = inicializar_matriz(9,9,0)
-cargar_numeros(matriz, 45)
-fijas = []
-for fila in matriz:
-    fijas.append([1 if x != 0 else 0 for x in fila])
+tablero_completo = generar_tablero_completo()
+matriz = crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5)
+
+
 
 
 
@@ -71,6 +70,8 @@ def dibujar_numeros(pantalla, matriz):
                 y = inicio_y + fila * tamaño_celdas + tamaño_celdas//2 - texto.get_height()//2
                 pantalla.blit(texto, (x, y))
 
+
+
 #Bucle principal del juego
 
 while True:
@@ -98,16 +99,23 @@ while True:
             fila, columna = celda_seleccionada
             
             
-            # Primero verificamos si la celda es fija
-            if fijas[fila][columna] == 1:
-            # No permitimos modificarla
+            if not casilla_editable(matriz, fila, columna):
                 continue
 
 
             #NUMEROS DEL 1 AL 9
             if pygame.K_1 <= evento.key <= pygame.K_9:
                 numero = evento.key - pygame.K_0
-                matriz[fila][columna] = numero
+                if es_valido(matriz, fila, columna, numero):
+                    copia = [fila[:] for fila in matriz]
+                    copia[fila][columna] = numero
+
+                    if resolver_sudoku(copia):  
+                        matriz[fila][columna] = numero
+                    else:
+                        print("Ese número hace el sudoku irresoluble")
+                else:
+                    print("Número inválido según reglas")
 
             #BORRAR CON BACKSPACE/DELETE
             if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
