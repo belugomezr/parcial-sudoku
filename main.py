@@ -12,6 +12,8 @@ celda_seleccionada = None
 tablero_completo = generar_tablero_completo()
 matriz = crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5)
 
+tablero_inicial = [fila[:] for fila in matriz]
+
 
 
 
@@ -51,11 +53,8 @@ def dibujar_tablero(pantalla):
                          4)
 
 
-def dibujar_numeros(pantalla, matriz):
-    """
-    Dibuja los números de la matriz en la pantalla de Pygame.
-    """
-    fuente = pygame.font.Font(None, 30)  # tamaño del texto
+def dibujar_numeros(pantalla, matriz, tablero_inicial):
+    fuente = pygame.font.Font(None, 30)
     tamaño_celdas = 50
     inicio_x = 175
     inicio_y = 75
@@ -63,9 +62,17 @@ def dibujar_numeros(pantalla, matriz):
     for fila in range(9):
         for columna in range(9):
             numero = matriz[fila][columna]
-            if numero != 0:  # solo dibujar los números que existen
-                texto = fuente.render(str(numero), True, (0, 0, 0))
-                # centrar el número en la celda
+            if numero != 0:
+
+                # Si el número es fijo → negro
+                if tablero_inicial[fila][columna] != 0:
+                    color = (0, 0, 0)
+                # Si el número lo ingresó el jugador → azul
+                else:
+                    color = (30, 80, 200)
+
+                texto = fuente.render(str(numero), True, color)
+
                 x = inicio_x + columna * tamaño_celdas + tamaño_celdas//2 - texto.get_width()//2
                 y = inicio_y + fila * tamaño_celdas + tamaño_celdas//2 - texto.get_height()//2
                 pantalla.blit(texto, (x, y))
@@ -125,6 +132,6 @@ while True:
 
     dimension_pantalla.blit(fondo, (0,0))
     dibujar_tablero(dimension_pantalla)
-    dibujar_numeros(dimension_pantalla, matriz)
+    dibujar_numeros(dimension_pantalla, matriz, tablero_inicial)
 
     pygame.display.update() #Actualiza
