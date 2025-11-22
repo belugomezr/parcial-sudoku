@@ -169,11 +169,6 @@ while True:
 #         #         else:
 #         #             print("Número inválido según reglas")
 
-#             #BORRAR CON BACKSPACE/DELETE
-#             # if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
-#             #     matriz[fila][columna] = 0
-
-
 
 #         dimension_pantalla.blit(fondo, (0,0))
 #         dibujar_tablero(dimension_pantalla)
