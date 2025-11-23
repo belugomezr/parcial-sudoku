@@ -37,6 +37,8 @@ def chequear_region(matriz:list, fila:int, columna:int, numero:int):
     return retorno 
 
 def validar_numero(matriz, fila, columna, numero):
+    if numero == 0:
+        return True   # una celda vacía NO es un error
     valor_anterior = matriz[fila][columna]
     matriz[fila][columna] = 0
 
@@ -115,8 +117,7 @@ def tablero_completo(matriz):
 
 def actualizar_puntaje(puntaje, matriz, fila, columna, numero, celda_incorrecta):
     if validar_numero(matriz, fila, columna, numero):
-        if region_completa(matriz, fila, columna):
-            puntaje += 9
+        puntaje += 1
         if tablero_completo(matriz):
             puntaje += 81
     else:
@@ -257,20 +258,77 @@ def actualizar_puntaje(puntaje, matriz, fila, columna, numero, celda_incorrecta)
 #     return matriz
 
 
-# def crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5):
-#     sudoku = [fila[:] for fila in tablero_completo]  # copiar matriz
+def crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5):
+    sudoku = [fila[:] for fila in tablero_completo]
 
-#     for reg_f in range(3):
-#         for reg_c in range(3):
-#             # generar posiciones dentro de la región 3x3
-#             posiciones = [(reg_f*3 + i, reg_c*3 + j) for i in range(3) for j in range(3)]
-#             random.shuffle(posiciones)
+    # posiciones del tablero mezcladas
+    posiciones = [(fila, col) for fila in range(9) for col in range(9)]
+    random.shuffle(posiciones)
 
-#             # dejar solo 5 números, vaciar el resto
-#             for f, c in posiciones[pistas_por_region:]:
-#                 sudoku[f][c] = 0
+    for fila, col in posiciones:
+        if sudoku[fila][col] == 0:
+            continue
 
-#     return sudoku
+        valor_original = sudoku[fila][col]
+        sudoku[fila][col] = 0
 
-# def casilla_editable(tablero_inicial, fila, columna):
-#     return tablero_inicial[fila][columna] == 0
+        copia = [fila[:] for fila in sudoku]
+        soluciones = resolver_sudoku_conteo(copia)
+
+        # si el sudoku ahora no tiene solución única → revertimos
+        if soluciones != 1:
+            sudoku[fila][col] = valor_original
+
+        # limitar cantidad mínima de pistas
+        pistas_totales = sum(1 for v in sum(sudoku, []) if v != 0)
+        if pistas_totales <= pistas_por_region * 9:
+            break
+
+    return sudoku
+
+
+def resolver_sudoku_conteo(matriz, limite=2):
+    """
+    Cuenta cuántas soluciones tiene el sudoku.
+    Se detiene si encuentra más de 'limite'.
+    """
+    vacio = encontrar_vacio(matriz)
+    if not vacio:
+        return 1  # encontró una solución
+
+    fila, col = vacio
+    soluciones = 0
+
+    for num in range(1, 10):
+        if validar_numero(matriz, fila, col, num):
+            matriz[fila][col] = num
+            soluciones += resolver_sudoku_conteo(matriz, limite)
+
+            if soluciones >= limite:
+                break
+
+            matriz[fila][col] = 0
+
+    return soluciones
+
+
+
+def region_correcta(matriz, region_f, region_c):
+    numeros = []
+    for f in range(region_f*3, region_f*3+3):
+        for c in range(region_c*3, region_c*3+3):
+            num = matriz[f][c]
+            if num == 0:
+                return False   # incompleta
+            numeros.append(num)
+    return len(numeros) == 9 and len(set(numeros)) == 9  # sin repetidos
+
+
+def actualizar_puntaje_regiones(matriz, regiones_completadas, puntaje):
+    for rf in range(3):
+        for rc in range(3):
+            if not regiones_completadas[rf][rc]:  # aun no sumó
+                if region_correcta(matriz, rf, rc):
+                    puntaje += 9
+                    regiones_completadas[rf][rc] = True
+    return puntaje
