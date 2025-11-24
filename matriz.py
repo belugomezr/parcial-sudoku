@@ -1,6 +1,14 @@
 
 import random
 
+def inicializar_matriz(filas, columnas, valor_inicial=0):
+    matriz = []
+    for _ in range(filas):
+        fila = [valor_inicial] * columnas
+        matriz.append(fila)
+    return matriz
+
+matriz = inicializar_matriz(9, 9)
 
 def chequear_fila(matriz:list, fila:int, numero:int): #matriz, fila y numero que quiero buscar 
     retorno = False
@@ -37,20 +45,34 @@ def es_valido(matriz, fila, columna, numero):
         return False
     return True
 
-
+def cargar_numeros(matriz:list, cantidad:int):
+    max_numeros_por_region = (int) (cantidad / 9)
     for fila_region in range(3): #recorre regiones (0,1,2)
         for columna_region in range(3):
             for _ in range(max_numeros_por_region): 
                 numero_repetido = True
                 numero_aleatorio = 0
-                
+                    
                 fila = random.randint(0, 2) + (fila_region * 3) 
                 columna = random.randint(0, 2) + (columna_region * 3) 
-                # si el casillero ya está ocupado, buscamos otro
+                 # si el casillero ya está ocupado, buscamos otro
                 while matriz[fila][columna] != 0:
                     fila = random.randint(0, 2) + (fila_region * 3)
                     columna = random.randint(0, 2) + (columna_region * 3)
+                while(numero_repetido == True): 
+                    numero_aleatorio = random.randint(1, 9) 
+                    numero_repetido = False
+                if chequear_fila(matriz, fila, numero_aleatorio) == True:
+                     numero_repetido = True 
+                elif chequear_columna(matriz, columna, numero_aleatorio ) == True:
+                    numero_repetido = True 
+                elif chequear_region(matriz, fila, columna, numero_aleatorio) == True: 
+                    numero_repetido = True
 
+    if numero_repetido == False:
+     matriz[fila][columna] = numero_aleatorio 
+    
+    return matriz
 
 def encontrar_vacio(matriz):
     for f in range(9):

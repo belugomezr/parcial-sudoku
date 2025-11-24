@@ -5,7 +5,7 @@ pygame.init() #iniciliazo pygame
 
 dimension_pantalla = pygame.display.set_mode((800,600)) #Creamos la dimension_pantalla principal (donde vamos a dibujar numeros, sonidos,etc)
 pygame.display.set_caption("Mi sudoku") #Titulo de la ventana
-fondo = pygame.image.load("fondo.sudoku.jpg") #Cargo la imagen de mi dimension_pantalla 
+fondo = pygame.image.load("parcial-sudoku//fondo.sudoku.jpg") #Cargo la imagen de mi dimension_pantalla 
 fondo = pygame.transform.scale(fondo, (800, 600)) #Adapto la imagen a la dimension_pantalla
 celda_seleccionada = None
 
@@ -14,9 +14,8 @@ matriz = crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5)
 
 tablero_inicial = [fila[:] for fila in matriz]
 
-
-
-
+# inicializar_matriz(9,9)
+# cargar_numeros(matriz, 45)
 
 def dibujar_tablero(pantalla):
     color_linea_fina = (200, 200, 200)  
