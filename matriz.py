@@ -56,6 +56,20 @@ def encontrar_vacio(matriz):
                 return i, j
     return None
 
+def generar_tablero_completo():
+    matriz = [[0]*9 for _ in range(9)]
+    resolver_sudoku_aleatorio(matriz)
+    return matriz
+
+def region_completa(matriz, fila, columna):
+    fila_vertice = (fila//3)*3
+    columna_vertice = (columna//3)*3
+    for i in range(3):
+        for j in range(3):
+            if matriz[fila_vertice + i][columna_vertice + j] == 0:
+                return False
+    return True
+
 def resolver_sudoku_aleatorio(matriz):
     pos = encontrar_vacio(matriz)
     if pos is None:
@@ -71,10 +85,35 @@ def resolver_sudoku_aleatorio(matriz):
             matriz[fila][col] = 0
     return False
 
-def generar_tablero_completo():
-    matriz = [[0]*9 for _ in range(9)]
-    resolver_sudoku_aleatorio(matriz)
-    return matriz
+def resolver_sudoku_conteo(matriz, limite=2):
+    """
+    Cuenta cuántas soluciones tiene el sudoku.
+    Se detiene si encuentra más de 'limite'.
+    """
+    vacio = encontrar_vacio(matriz)
+    if not vacio:
+        return 1  # encontró una solución
+
+    fila, col = vacio
+    soluciones = 0
+
+    for num in range(1, 10):
+        if validar_numero(matriz, fila, col, num):
+            matriz[fila][col] = num
+            soluciones += resolver_sudoku_conteo(matriz, limite)
+
+            if soluciones >= limite:
+                break
+
+            matriz[fila][col] = 0
+
+    return soluciones
+
+def tablero_completo(matriz):
+    for fila in matriz:
+        if 0 in fila:
+            return False
+    return True
 
 def generar_tablero_facil_por_region(numeros_por_region):
     matriz = inicializar_matriz(9, 9, 0)
@@ -99,32 +138,6 @@ def generar_tablero_facil_por_region(numeros_por_region):
                 else:
                     intentos += 1
     return matriz
-
-def region_completa(matriz, fila, columna):
-    fila_vertice = (fila//3)*3
-    columna_vertice = (columna//3)*3
-    for i in range(3):
-        for j in range(3):
-            if matriz[fila_vertice + i][columna_vertice + j] == 0:
-                return False
-    return True
-
-def tablero_completo(matriz):
-    for fila in matriz:
-        if 0 in fila:
-            return False
-    return True
-
-def actualizar_puntaje(puntaje, matriz, fila, columna, numero, celda_incorrecta):
-    if validar_numero(matriz, fila, columna, numero):
-        puntaje += 1
-        if tablero_completo(matriz):
-            puntaje += 81
-    else:
-        if not celda_incorrecta:
-            puntaje -= 1
-    return puntaje
-
 
 def crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5):
     sudoku = [fila[:] for fila in tablero_completo]
@@ -154,33 +167,6 @@ def crear_sudoku_con_pistas(tablero_completo, pistas_por_region=5):
 
     return sudoku
 
-
-def resolver_sudoku_conteo(matriz, limite=2):
-    """
-    Cuenta cuántas soluciones tiene el sudoku.
-    Se detiene si encuentra más de 'limite'.
-    """
-    vacio = encontrar_vacio(matriz)
-    if not vacio:
-        return 1  # encontró una solución
-
-    fila, col = vacio
-    soluciones = 0
-
-    for num in range(1, 10):
-        if validar_numero(matriz, fila, col, num):
-            matriz[fila][col] = num
-            soluciones += resolver_sudoku_conteo(matriz, limite)
-
-            if soluciones >= limite:
-                break
-
-            matriz[fila][col] = 0
-
-    return soluciones
-
-
-
 def region_correcta(matriz, region_f, region_c):
     numeros = []
     for f in range(region_f*3, region_f*3+3):
@@ -191,6 +177,15 @@ def region_correcta(matriz, region_f, region_c):
             numeros.append(num)
     return len(numeros) == 9 and len(set(numeros)) == 9  # sin repetidos
 
+def actualizar_puntaje(puntaje, matriz, fila, columna, numero, celda_incorrecta):
+    if validar_numero(matriz, fila, columna, numero):
+        puntaje += 1
+        if tablero_completo(matriz):
+            puntaje += 81
+    else:
+        if not celda_incorrecta:
+            puntaje -= 1
+    return puntaje
 
 def actualizar_puntaje_regiones(matriz, regiones_completadas, puntaje):
     for rf in range(3):

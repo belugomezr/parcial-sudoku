@@ -1,6 +1,6 @@
 import pygame
 from matriz import *
-from inicio import mostrar_inicio
+from inicio import *
 
 pygame.init()
 
@@ -10,9 +10,11 @@ pygame.display.set_caption("Mi Sudoku")
 fondo = pygame.image.load("fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
 
-# --- FUNCIONES NUEVAS 
-
 def pedir_nick(pantalla):
+    # Cargar el mismo fondo del juego
+    fondo = pygame.image.load("fondo.sudoku.jpg")
+    fondo = pygame.transform.scale(fondo, (800, 600))
+
     fuente = pygame.font.Font(None, 50)
     nick = ""
     escribiendo = True
@@ -32,55 +34,24 @@ def pedir_nick(pantalla):
                     if len(evento.unicode) == 1:
                         nick += evento.unicode
 
-        pantalla.fill((0, 0, 0))
-        texto = fuente.render("Ingresá tu Nick:", True, (255, 255, 255))
-        pantalla.blit(texto, (200, 200))
+        # Dibujar fondo en vez del color negro
+        pantalla.blit(fondo, (0, 0))
 
-        nick_texto = fuente.render(nick, True, (255, 255, 0))
-        pantalla.blit(nick_texto, (200, 300))
+        texto = fuente.render("Ingresá tu Nick:", True, (0, 0, 0))   # texto negro
+        pantalla.blit(texto, (200, 200))
+        x_nick = 200 + texto.get_width() + 20
+
+        nick_texto = fuente.render(nick, True, (0, 0, 0))  # nombre en negro
+        pantalla.blit(nick_texto, (x_nick, 200))
 
         pygame.display.update()
 
     return nick
 
-
 def guardar_puntaje(nick, puntaje):
     with open("puntajes.txt", "a", encoding="utf-8") as archivo:
         archivo.write(f"{nick} - {puntaje}\n")
 
-
-# --- Mostrar pantalla de inicio ---
-accion, nivel = mostrar_inicio()
-if accion == "Salir":
-    pygame.quit()
-    quit()
-
-# --- Definir dificultad ---
-if nivel == "Fácil":
-    numeros_por_region = 5
-elif nivel == "Medio":
-    numeros_por_region = 3
-elif nivel == "Difícil":
-    numeros_por_region = 2
-else:
-    numeros_por_region = 5  
-
-# --- Crear tablero ---
-tablero_inicial = generar_tablero_facil_por_region(numeros_por_region)
-matriz = [fila.copy() for fila in tablero_inicial]
-errores_celdas = [[False]*9 for _ in range(9)]
-regiones_completadas = [[False]*3 for _ in range(3)]
-botones = {
-    "Validar": pygame.Rect(500, 540, 230, 50),
-    "Reiniciar": pygame.Rect(70, 540, 230, 50),
-    "Terminar": pygame.Rect(500, 10, 230, 50),
-}
-
-celda_incorrecta = False
-celda_seleccionada = None
-puntaje = 0
-
-# ---------------------- DIBUJOS ------------------------------
 
 def dibujar_tablero(pantalla, matriz):
     color_linea_fina = (200, 200, 200)
@@ -104,7 +75,6 @@ def dibujar_tablero(pantalla, matriz):
         pygame.draw.line(pantalla, color_linea_gruesa,
                          (inicio_x + i * tamaño_celdas, inicio_y),
                          (inicio_x + i * tamaño_celdas, inicio_y + tamaño_celdas*9), 4)
-
 
 def dibujar_puntaje(pantalla, puntaje):
     fuente = pygame.font.Font(None, 50)
@@ -132,7 +102,6 @@ def dibujar_numeros(pantalla, matriz):
                 y = inicio_y + fila * tamaño_celdas + tamaño_celdas//2 - texto.get_height()//2
                 pantalla.blit(texto, (x, y))
 
-
 def dibujar_seleccion(pantalla, celda):
     if celda:
         fila, col = celda
@@ -145,7 +114,6 @@ def dibujar_seleccion(pantalla, celda):
 
         #color = (255,0,0) if celda_incorrecta else (0,255,0)
         pygame.draw.rect(pantalla, color, (175 + col*50, 75 + fila*50, 50, 50), 3)
-
 
 def dibujar_botones(pantalla):
     fuente = pygame.font.Font(None, 40)
@@ -166,7 +134,6 @@ def dibujar_botones(pantalla):
     return botones
 
 
-
 def validar_tablero_completo(matriz):
     global errores_celdas
     errores = 0
@@ -184,6 +151,38 @@ def validar_tablero_completo(matriz):
                     errores_celdas[fila][col] = False
 
     return errores
+
+#  Mostrar pantalla de inicio 
+accion, nivel = mostrar_inicio()
+if accion == "Salir":
+    pygame.quit()
+    quit()
+
+# Definir dificultad 
+if nivel == "Fácil":
+    numeros_por_region = 5
+elif nivel == "Medio":
+    numeros_por_region = 3
+elif nivel == "Difícil":
+    numeros_por_region = 2
+else:
+    numeros_por_region = 5  
+
+#  Crear tablero 
+tablero_inicial = generar_tablero_facil_por_region(numeros_por_region)
+matriz = [fila.copy() for fila in tablero_inicial]
+errores_celdas = [[False]*9 for _ in range(9)]
+regiones_completadas = [[False]*3 for _ in range(3)]
+botones = {
+    "Validar": pygame.Rect(500, 540, 230, 50),
+    "Reiniciar": pygame.Rect(70, 540, 230, 50),
+    "Terminar": pygame.Rect(500, 10, 230, 50),
+}
+
+celda_incorrecta = False
+celda_seleccionada = None
+puntaje = 0
+
 
 # ------------------- LOOP PRINCIPAL -------------------------
 
@@ -203,8 +202,7 @@ while True:
                 celda_incorrecta = False                           
             if botones["Validar"].collidepoint(mouseX, mouseY):                
                 errores = validar_tablero_completo(matriz) 
-                puntaje -= errores 
-                print("Errores:", errores, "Puntaje:", puntaje)            
+                puntaje -= errores             
                 # Si hay errores, se muestran pero NO se sale del tablero  
                 if errores > 0:
                     continue                       
