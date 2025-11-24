@@ -43,7 +43,7 @@ def mostrar_inicio():
                             else:
                                 nivel = "Fácil"
                         elif texto == "Ver Puntajes":
-                            print("Mostrar puntajes") 
+                            mostrar_puntajes(pantalla)
                         elif texto == "Salir":
                             return "Salir", nivel
 
@@ -59,3 +59,62 @@ def mostrar_inicio():
         pantalla.blit(nivel_render, (300, 150))
 
         pygame.display.flip()
+
+def mostrar_puntajes(pantalla):
+    fuente = pygame.font.Font(None, 60)
+    fuente_chica = pygame.font.Font(None, 40)
+
+    puntajes = mejores_cinco(cargar_puntajes())
+
+    volver_boton = pygame.Rect(300, 520, 200, 50)
+
+    en_puntajes = True
+    while en_puntajes:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if volver_boton.collidepoint(evento.pos):
+                    en_puntajes = False  # vuelve a la pantalla de inicio
+
+        pantalla.fill((0, 0, 0))
+
+        titulo = fuente.render("MEJORES PUNTAJES", True, (255, 255, 255))
+        pantalla.blit(titulo, (150, 50))
+
+        y = 160
+        if puntajes:
+            for nombre, pts in puntajes:
+                texto = fuente_chica.render(f"{nombre} - {pts}", True, (255, 255, 0))
+                pantalla.blit(texto, (250, y))
+                y += 50
+        else:
+            texto = fuente_chica.render("No hay puntajes guardados", True, (255, 255, 255))
+            pantalla.blit(texto, (200, 250))
+
+        # Botón volver
+        pygame.draw.rect(pantalla, (255, 255, 255), volver_boton)
+        texto_volver = fuente_chica.render("Volver", True, (0, 0, 0))
+        pantalla.blit(texto_volver, (volver_boton.x + 50, volver_boton.y + 10))
+
+        pygame.display.update()
+
+def cargar_puntajes():
+    puntajes = []
+
+    with open("puntajes.txt", "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            if "-" in linea:
+                nombre, puntaje = linea.strip().split(" - ")
+                puntaje = int(puntaje)  # convertir a número
+                puntajes.append((nombre, puntaje))
+
+    return puntajes
+
+def mejores_cinco(puntajes):
+    # Ordenar de mayor a menor según el puntaje
+    puntajes_ordenados = sorted(puntajes, key=lambda x: x[1], reverse=True)
+    return puntajes_ordenados[:5]
+

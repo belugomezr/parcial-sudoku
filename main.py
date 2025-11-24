@@ -2,7 +2,6 @@ import pygame
 from matriz import *
 from inicio import mostrar_inicio
 
-
 pygame.init()
 
 # --- Pantalla principal ---
@@ -73,14 +72,9 @@ errores_celdas = [[False]*9 for _ in range(9)]
 regiones_completadas = [[False]*3 for _ in range(3)]
 botones = {
     "Validar": pygame.Rect(500, 540, 230, 50),
-    "Reiniciar": pygame.Rect(70, 540, 230, 50)
+    "Reiniciar": pygame.Rect(70, 540, 230, 50),
+    "Terminar": pygame.Rect(500, 10, 230, 50),
 }
-
-def generar_tablero_facil_por_region(pistas_por_region):
-    completo = generar_tablero_completo()
-    sudoku = crear_sudoku_con_pistas(completo, pistas_por_region)
-    return sudoku
-
 
 celda_incorrecta = False
 celda_seleccionada = None
@@ -160,7 +154,8 @@ def dibujar_botones(pantalla):
 
     botones = {
         "Validar": pygame.Rect(500, 540, 230, 50),
-        "Reiniciar": pygame.Rect(70, 540, 230, 50)
+        "Reiniciar": pygame.Rect(70, 540, 230, 50),
+        "Terminar": pygame.Rect(500, 10, 230, 50),
     }
 
     for texto, rect in botones.items():
@@ -171,16 +166,6 @@ def dibujar_botones(pantalla):
     return botones
 
 
-# --- Validación del tablero completo ------------------------
-
-#def validar_tablero_completo(matriz):
-    #errores = 0
-    #for fila in range(9):
-        #for col in range(9):
-            #num = matriz[fila][col]
-            #if num != 0 and not validar_numero(matriz, fila, col, num):
-                #errores += 1
-    #return errores
 
 def validar_tablero_completo(matriz):
     global errores_celdas
@@ -215,18 +200,7 @@ while True:
                 fila = (mouseY - 75) // 50 
                 columna = (mouseX - 175) // 50 
                 celda_seleccionada = (fila, columna)   
-                celda_incorrecta = False               
-            # Botones  
-            botones = {
-                "Validar": pygame.Rect(500, 540, 230, 50), 
-                "Reiniciar": pygame.Rect(70, 540, 230, 50) 
-            }              
-            # --- VALIDAR TABLERO ---  
-            #if botones["Validar"].collidepoint(mouseX, mouseY):   
-                #errores = validar_tablero_completo(matriz)
-                #puntaje -= errores
-                #print("Errores:", errores, "Puntaje:", puntaje)               
-            # (NO BORRO NADA — SOLO MUEVO ABAJO LO QUE TENÍAS) 
+                celda_incorrecta = False                           
             if botones["Validar"].collidepoint(mouseX, mouseY):                
                 errores = validar_tablero_completo(matriz) 
                 puntaje -= errores 
@@ -267,7 +241,26 @@ while True:
                 tablero_inicial = generar_tablero_facil_por_region(numeros_por_region) 
                 matriz = [fila.copy() for fila in tablero_inicial] 
                 puntaje = 0
-                celda_seleccionada = None  
+                celda_seleccionada = None
+            if botones["Terminar"].collidepoint(mouseX, mouseY):
+                nick = pedir_nick(dimension_pantalla)
+                guardar_puntaje(nick, puntaje)
+                # Volver al inicio
+                accion, nivel = mostrar_inicio()
+                if accion == "Salir":  
+                    pygame.quit()  
+                    quit()             
+                # Reajustar dificultad 
+                if nivel == "Fácil":   
+                    numeros_por_region = 5 
+                elif nivel == "Medio": 
+                    numeros_por_region = 3 
+                else:  
+                    numeros_por_region = 2             
+                tablero_inicial = generar_tablero_facil_por_region(numeros_por_region) 
+                matriz = [fila.copy() for fila in tablero_inicial] 
+                puntaje = 0
+                celda_seleccionada = None
 
         elif evento.type == pygame.KEYDOWN and celda_seleccionada:
             fila, col = celda_seleccionada
@@ -275,14 +268,6 @@ while True:
                 if evento.key in (pygame.K_BACKSPACE, pygame.K_DELETE):
                     matriz[fila][col] = 0
                     celda_incorrecta = False               
-                #elif evento.unicode in "123456789":
-                    #numero = int(evento.unicode)
-                    #matriz[fila][col] = numero
-                    #if validar_numero(matriz, fila, col, numero):
-                        #celda_incorrecta = False
-                        #puntaje = actualizar_puntaje(puntaje, matriz, fila, col, numero, celda_incorrecta)
-                    #else:
-                        #celda_incorrecta = True
                 elif evento.unicode in "123456789":
                     numero = int(evento.unicode)
                     matriz[fila][col] = numero
