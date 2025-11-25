@@ -9,9 +9,9 @@ def cargar_puntajes():
 
     with open("puntajes.txt", "r", encoding="utf-8") as archivo:
         for linea in archivo:
-            if "-" in linea:
-                nombre, puntaje = linea.strip().split(" - ")
-                puntaje = int(puntaje)  # convertir a número
+            if ":" in linea:
+                nombre, puntaje = linea.strip().split(" : ")
+                puntaje = int(puntaje)  
                 puntajes.append((nombre, puntaje))
 
     return puntajes

@@ -188,7 +188,7 @@ def actualizar_puntaje(puntaje, matriz, fila, columna, numero, celda_incorrecta)
 def actualizar_puntaje_regiones(matriz, regiones_completadas, puntaje):
     for rf in range(3):
         for rc in range(3):
-            if not regiones_completadas[rf][rc]:  # aun no sumó
+            if not regiones_completadas[rf][rc]:  
                 if region_correcta(matriz, rf, rc):
                     puntaje += 9
                     regiones_completadas[rf][rc] = True

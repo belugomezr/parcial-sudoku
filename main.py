@@ -12,7 +12,6 @@ fondo = pygame.image.load("fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
 
 def pedir_nick(pantalla):
-    # Cargar el mismo fondo del juego
     fondo = pygame.image.load("fondo.sudoku.jpg")
     fondo = pygame.transform.scale(fondo, (800, 600))
 
@@ -51,10 +50,7 @@ def pedir_nick(pantalla):
 
 def guardar_puntaje(nick, puntaje):
     with open("puntajes.txt", "a", encoding="utf-8") as archivo:
-        archivo.write(f"{nick} - {puntaje}\n")
-
-# inicializar_matriz(9,9)
-# cargar_numeros(matriz, 45)
+        archivo.write(f"{nick} : {puntaje}\n")
 
 def dibujar_tablero(pantalla):
     color_linea_fina = (200, 200, 200)
@@ -114,20 +110,12 @@ def dibujar_seleccion(pantalla, celda):
         else:
             color = (0, 255, 0)
         
-
-        #color = (255,0,0) if celda_incorrecta else (0,255,0)
         pygame.draw.rect(pantalla, color, (175 + col*50, 75 + fila*50, 50, 50), 3)
 
 def dibujar_botones(pantalla):
     fuente = pygame.font.Font(None, 40)
     BLANCO = (255,255,255)
     NEGRO = (0,0,0)
-
-    botones = {
-        "Validar": pygame.Rect(500, 540, 230, 50),
-        "Reiniciar": pygame.Rect(70, 540, 230, 50),
-        "Terminar": pygame.Rect(500, 10, 230, 50),
-    }
 
     for texto, rect in botones.items():
         pygame.draw.rect(pantalla, BLANCO, rect)
@@ -277,19 +265,15 @@ while True:
                     if validar_numero(matriz, fila, col, numero):
                         celda_incorrecta = False
                         puntaje = actualizar_puntaje(puntaje, matriz, fila, col, numero, celda_incorrecta)
-
-                        # SUMAR 9 PUNTOS SI LA REGIÓN SE COMPLETA
                         puntaje = actualizar_puntaje_regiones(matriz, regiones_completadas, puntaje)
-
                     else:
                         celda_incorrecta = True
-                        #matriz[fila][col] = numero
                         puntaje = actualizar_puntaje(puntaje, matriz, fila, col, numero, celda_incorrecta)
 
                         
 
     dimension_pantalla.blit(fondo, (0,0))
-    dibujar_tablero(dimension_pantalla, matriz)
+    dibujar_tablero(dimension_pantalla)
     dibujar_numeros(dimension_pantalla, matriz)
     dibujar_seleccion(dimension_pantalla, celda_seleccionada)
     dibujar_botones(dimension_pantalla)
