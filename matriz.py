@@ -226,7 +226,7 @@ def tablero_completo(matriz):
             return False
     return True
 
-def generar_tablero_facil_por_region(numeros_por_region): #genera los numeros por region y dificultad
+def generar_tablero_facil_por_region(numeros_por_region): #genera los numeros por region 
     """
     DESCRIPCION:
         Crea un tablero inicial completando cada región con cierta cantidad de números aleatorios válidos.
