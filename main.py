@@ -124,7 +124,6 @@ def dibujar_botones(pantalla):
 
     return botones
 
-
 def validar_tablero_completo(matriz):
     global errores_celdas
     errores = 0
