@@ -12,6 +12,16 @@ fondo = pygame.image.load("fondo.sudoku.jpg")
 fondo = pygame.transform.scale(fondo, (800, 600))
 
 def pedir_nick(pantalla):
+    """
+    DESCRIPCION:
+        Abre una pantalla donde el usuario escribe su nombre (nick). Se muestra un fondo y el texto “Ingresá tu Nick”. El usuario escribe caracteres y confirma con Enter.
+
+    PARAMETROS:
+        pantalla: superficie de Pygame donde se dibuja.
+
+    RETORNA:
+        nick (str): el nombre escrito por el jugador.
+    """
     fondo = pygame.image.load("fondo.sudoku.jpg")
     fondo = pygame.transform.scale(fondo, (800, 600))
 
@@ -49,10 +59,33 @@ def pedir_nick(pantalla):
     return nick
 
 def guardar_puntaje(nick, puntaje):
+    """
+    DESCRIPCION:
+       Guarda el puntaje del jugador en un archivo de texto plano (puntajes.txt). 
+
+    PARAMETROS:
+        nick (str): nombre del jugador.
+        puntaje (int): puntos obtenidos.
+
+    RETORNA:
+        nada
+    """
     with open("puntajes.txt", "a", encoding="utf-8") as archivo:
         archivo.write(f"{nick} : {puntaje}\n")
 
 def dibujar_tablero(pantalla):
+    """
+    DESCRIPCION:
+        Dibuja el tablero de Sudoku en pantalla:
+            Líneas finas para las celdas.
+            Líneas gruesas cada 3 filas/columnas marcando regiones 3x3. 
+
+    PARAMETROS:
+        pantalla: superficie sobre la que se dibuja.
+
+    RETORNA:
+        nada
+    """
     color_linea_fina = (200, 200, 200)
     color_linea_gruesa = (0, 0, 0)
     tamaño_celdas = 50
@@ -76,11 +109,36 @@ def dibujar_tablero(pantalla):
                          (inicio_x + i * tamaño_celdas, inicio_y + tamaño_celdas*9), 4)
 
 def dibujar_puntaje(pantalla, puntaje):
+    """
+    DESCRIPCION:
+        Dibuja el puntaje actual en esquina superior izquierda. 
+
+    PARAMETROS:
+        pantalla: superficie de Pygame.
+        puntaje (int): puntos del jugador..
+
+    RETORNA:
+        nada
+    """    
     fuente = pygame.font.Font(None, 50)
     texto = fuente.render(f"Puntos: {puntaje}", True, (0, 0, 0))
     pantalla.blit(texto, (15, 15))  # posición (x, y)
 
 def dibujar_numeros(pantalla, matriz):
+    """
+    DESCRIPCION:
+        Dibuja todos los números de la matriz del Sudoku:
+            Negro si es número fijo del tablero original.
+            Azul si lo ingresó el usuario.
+            Rojo si tiene error después de validar. 
+
+    PARAMETROS:
+        pantalla: superficie donde dibujar.
+        matriz (lista 9x9): estado actual del tablero.
+
+    RETORNA:
+        nada
+    """    
     fuente = pygame.font.Font(None, 40)
     tamaño_celdas = 50
     inicio_x = 175
@@ -102,6 +160,17 @@ def dibujar_numeros(pantalla, matriz):
                 pantalla.blit(texto, (x, y))
 
 def dibujar_seleccion(pantalla, celda):
+    """
+    DESCRIPCION:
+        Dibuja un borde alrededor de la celda actualmente seleccionada.
+
+    PARAMETROS:
+        pantalla: superficie donde dibujar.
+        celda (tuple (fila, col) o None).
+
+    RETORNA:
+        nada
+    """
     if celda:
         fila, col = celda
         # Si la celda tiene error después de VALIDAR → rojo
@@ -113,6 +182,16 @@ def dibujar_seleccion(pantalla, celda):
         pygame.draw.rect(pantalla, color, (175 + col*50, 75 + fila*50, 50, 50), 3)
 
 def dibujar_botones(pantalla):
+    """
+    DESCRIPCION:
+        Dibuja los botones que existen en el dict global botones.
+
+    PARAMETROS:
+        pantalla: superficie donde dibujar.
+
+    RETORNA:
+        botones: diccionario con los rectángulos de cada botón.
+    """
     fuente = pygame.font.Font(None, 40)
     BLANCO = (255,255,255)
     NEGRO = (0,0,0)
@@ -125,6 +204,18 @@ def dibujar_botones(pantalla):
     return botones
 
 def validar_tablero_completo(matriz):
+    """
+    DESCRIPCION:
+        Valida todas las celdas que NO son del tablero inicial.
+        Marca errores en errores_celdas.
+        Devuelve la cantidad total de errores encontrados.
+
+    PARAMETROS:
+        matriz (lista 9x9): tablero actual del jugador.
+
+    RETORNA:
+        errores (int): cantidad total de celdas incorrectas.
+    """
     global errores_celdas
     errores = 0
 
