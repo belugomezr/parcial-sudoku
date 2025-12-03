@@ -347,6 +347,26 @@ while True:
                 celda_seleccionada = None
             if botones["Volver"].collidepoint(mouseX, mouseY):
                 accion, nivel = mostrar_inicio()
+    
+                if accion == "Salir":
+                    pygame.quit()
+                    quit()
+
+                # Si vuelve a "Jugar", regenerar tablero con la dificultad elegida
+                if nivel == "Fácil":
+                    numeros_por_region = 5
+                elif nivel == "Medio":
+                    numeros_por_region = 4
+                else:
+                    numeros_por_region = 3
+
+                tablero_inicial = generar_tablero_facil_por_region(numeros_por_region)
+                matriz = [fila.copy() for fila in tablero_inicial]
+                puntaje = 0
+                celda_seleccionada = None
+                errores_celdas = [[False]*9 for _ in range(9)]
+                regiones_completadas = [[False]*3 for _ in range(3)]
+
 
 
         elif evento.type == pygame.KEYDOWN and celda_seleccionada:
