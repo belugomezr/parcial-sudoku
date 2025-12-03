@@ -1,14 +1,1 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-belen : -3
-=======
 
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
-ramiro : 0
